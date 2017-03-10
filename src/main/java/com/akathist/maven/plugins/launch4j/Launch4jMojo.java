@@ -127,6 +127,13 @@ public class Launch4jMojo extends AbstractMojo {
     private String headerType;
 
     /**
+     * Whether you want a i686 or x86_64 app.
+     * Valid values are "i686" and "x86_64."
+     */
+    @Parameter
+    private String targetType;
+
+    /**
      * The name of the Launch4j native configuration file
      * The path, if relative, is relative to the pom.xml.
      */
@@ -367,6 +374,7 @@ public class Launch4jMojo extends AbstractMojo {
             final Config c = new Config();
 
             c.setHeaderType(headerType);
+            c.setTargetType(targetType);
             c.setOutfile(outfile);
             c.setJar(getJar());
             c.setDontWrapJar(dontWrapJar);
