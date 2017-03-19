@@ -305,6 +305,12 @@ public class Launch4jMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}/launch4j-config.xml")
     private File configOutfile;
 
+    /**
+     * Path to optional l4j.ini file
+     */
+    @Parameter
+    private String iniPath;
+
     private File getJar() {
         return new File(jar);
     }
@@ -409,6 +415,9 @@ public class Launch4jMojo extends AbstractMojo {
             }
             if (messages != null) {
                 c.setMessages(messages.toL4j());
+            }
+            if (iniPath != null) {
+                c.setIniPath(iniPath);
             }
             ConfigPersister.getInstance().setAntConfig(c, getBaseDir());
         }
