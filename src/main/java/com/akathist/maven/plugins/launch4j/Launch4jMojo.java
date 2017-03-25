@@ -311,6 +311,12 @@ public class Launch4jMojo extends AbstractMojo {
     @Parameter
     private String iniPath;
 
+    /**
+     * Whether JNI is used or not.
+     */
+    @Parameter(defaultValue = "false")
+    private boolean jni;
+
     private File getJar() {
         return new File(jar);
     }
@@ -382,7 +388,8 @@ public class Launch4jMojo extends AbstractMojo {
             c.setHeaderType(headerType);
             c.setTargetType(targetType);
             c.setOutfile(outfile);
-            c.setJar(getJar());
+            if(!dontWrapJar)
+            	c.setJar(getJar());
             c.setDontWrapJar(dontWrapJar);
             c.setErrTitle(errTitle);
             c.setDownloadUrl(downloadUrl);
@@ -419,6 +426,7 @@ public class Launch4jMojo extends AbstractMojo {
             if (iniPath != null) {
                 c.setIniPath(iniPath);
             }
+            c.setJni(jni);
             ConfigPersister.getInstance().setAntConfig(c, getBaseDir());
         }
 
