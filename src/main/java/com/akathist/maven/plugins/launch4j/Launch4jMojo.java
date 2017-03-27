@@ -317,6 +317,18 @@ public class Launch4jMojo extends AbstractMojo {
     @Parameter(defaultValue = "false")
     private boolean jni;
 
+    /**
+     * logfile path
+     */
+    @Parameter
+    private String logPath;
+
+    /**
+     * Enable logging
+     */
+    @Parameter
+    private String logging;
+
     private File getJar() {
         return new File(jar);
     }
@@ -425,6 +437,13 @@ public class Launch4jMojo extends AbstractMojo {
             }
             if (iniPath != null) {
                 c.setIniPath(iniPath);
+            }
+            
+            if (logPath != null) {
+                c.setLogPath(logPath);
+            }
+            if (logging != null) {
+                c.setLogging(logging);
             }
             c.setJni(jni);
             ConfigPersister.getInstance().setAntConfig(c, getBaseDir());
