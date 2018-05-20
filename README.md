@@ -15,6 +15,24 @@ Please check [this](src/main/resources/README.adoc) document for more detailed i
 
 # Version Notes
 
+## Version notes 1.7.21
+- fixes issue with detecting OSX, see [#58](../../issues/58) 
+
+## Version notes 1.7.20
+- uses the `linux64` platform when run on 64-bit Linux, see [#59](../../pull/59) 
+
+## Version notes 1.7.19
+- upgrades to the version 3.11 of Launch4j
+
+## Version notes 1.7.18
+- reverts changes introduced in **1.7.17**, see [#55](../../pull/55)
+
+## Version notes 1.7.17
+- adds support for unwrapped jar, see [#55](../../pull/55)
+
+## Version notes 1.7.16
+- detects different OSX versions to properly use proper binary bundle, see [#54](../../pull/54)
+
 ## Version notes 1.7.15
 - allows override some properties loaded from an extrnal Launch4j config file, see [#49](../../issues/49)
 
