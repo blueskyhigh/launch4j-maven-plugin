@@ -34,6 +34,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +46,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Wraps a jar in a Windows executable.
@@ -56,7 +59,9 @@ public class Launch4jMojo extends AbstractMojo {
 
     private static final String LAUNCH4J_GROUP_ID = "net.sf.launch4j";
 
-    /**
+	private static final String VERSION_PATTERN = "((\\d+\\.){3}\\d+)";
+
+	/**
      * The dependencies required by the project.
      */
     @Parameter(defaultValue = "${project.artifacts}", required = true, readonly = true)
@@ -68,6 +73,12 @@ public class Launch4jMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
+    /**
+     * Maven ProjectHelper.
+     */
+    @Component
+    private MavenProjectHelper projectHelper;
+    
     /**
      * The user's plugins (including, I hope, this one).
      */
@@ -135,6 +146,12 @@ public class Launch4jMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${project.build.directory}/${project.artifactId}.exe")
     private File outfile;
+
+    /**
+     * Attach generated executable witht given classifier to project
+     */
+    @Parameter
+    private String classifier;
 
     /**
      * The jar to bundle inside the executable.
@@ -390,7 +407,7 @@ public class Launch4jMojo extends AbstractMojo {
             c.setTargetType(targetType);
             c.setOutfile(outfile);
             if(!dontWrapJar)
-            	c.setJar(getJar());
+              c.setJar(getJar());
             c.setDontWrapJar(dontWrapJar);
             c.setErrTitle(errTitle);
             c.setDownloadUrl(downloadUrl);
@@ -419,6 +436,17 @@ public class Launch4jMojo extends AbstractMojo {
                 c.setSplash(splash.toL4j());
             }
             if (versionInfo != null) {
+				Pattern pattern = Pattern.compile(VERSION_PATTERN);
+				if(versionInfo.fileVersion != null ) {
+	            	Matcher matcher = pattern.matcher(versionInfo.fileVersion);
+					if (matcher.find())
+						versionInfo.fileVersion = matcher.group(1);
+				}
+				if(versionInfo.productVersion != null ) {
+	            	Matcher matcher = pattern.matcher(versionInfo.productVersion);
+					if (matcher.find())
+						versionInfo.productVersion = matcher.group(1);
+				}
                 c.setVersionInfo(versionInfo.toL4j());
             }
             if (messages != null) {
@@ -456,6 +484,10 @@ public class Launch4jMojo extends AbstractMojo {
             } catch (ConfigPersisterException e) {
                 throw new MojoExecutionException("Cannot save config into a XML file", e);
             }
+        }
+        
+        if(classifier != null) {
+            projectHelper.attachArtifact(project, "exe", classifier, outfile);
         }
     }
 
